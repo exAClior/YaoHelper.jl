@@ -10,4 +10,5 @@
 
     @test equiv_upto_phase(A, B)
     @test !equiv_upto_phase(A, C)
+    @test equiv_upto_phase(Matrix{ComplexF64}(I,4,4),Matrix{ComplexF64}(I,4,4))
 end

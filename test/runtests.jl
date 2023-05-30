@@ -1,4 +1,4 @@
-using YaoHelper, Yao
+using YaoHelper, Yao, LinearAlgebra
 using Test
 
 @testset "YaoHelper.jl" begin
