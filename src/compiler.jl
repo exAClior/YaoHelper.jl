@@ -39,3 +39,5 @@ function arbi_2x2unitary_gate(A::AbstractMatrix{T}, n::G, i::G, j::G) where {T,G
            Rxy(n, i, j, theta, -π / 2.0) *
            put(3, (1, 2) => diag_2x2_gate(Diagonal([exp(im * delta / 2), exp(-im * delta / 2)])))
 end
+
+# use givens rotation to compile a unitary to series of 2-level unitary gates
