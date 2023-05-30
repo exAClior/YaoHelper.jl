@@ -5,4 +5,6 @@ using Test
     # Write your tests here.
     include("states.jl")
     include("gates.jl")
+    include("compiler.jl")
+    include("utils.jl")
 end

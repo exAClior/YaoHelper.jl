@@ -1,8 +1,9 @@
 module YaoHelper
 
-using Yao
+using Yao, LinearAlgebra
 # Write your package code here.
 include("states.jl")
 include("gates.jl")
 include("compiler.jl")
+include("utils.jl")
 end
