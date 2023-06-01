@@ -1,4 +1,4 @@
-export decomp_4x4_diag, euler_angles_2x2, arbi_2x2unitary_gate
+export decomp_4x4_diag, euler_angles_2x2, arbi_2x2unitary_gate, decomp_dxd_unitary
 
 # implement decomposition for arbitrary diagonal 4x4 matrices
 function decomp_4x4_diag(A::AbstractMatrix{T}) where {T}
@@ -41,3 +41,43 @@ function arbi_2x2unitary_gate(A::AbstractMatrix{T}, n::G, i::G, j::G) where {T,G
 end
 
 # use givens rotation to compile a unitary to series of 2-level unitary gates
+function decomp_dxd_unitary(A::AbstractMatrix{T}) where {T}
+    two_level_unitaries = SparseMatrixCSC{ComplexF64,Int64}[]
+    isunitary(A) || error("A must be unitary")
+    # either follow  https://arxiv.org/pdf/1210.7366.pdf
+    for i in 1:size(A, 1)
+        for j in (i+1):size(A, 1)
+            G, r = LinearAlgebra.givens(A, i, j, i)
+            G_phase = sparse(Matrix{ComplexF64}(I, size(A)))
+            if j != size(A, 1)
+                r = 1.0
+            end
+            G_phase[i, i] = G.c / r
+            G_phase[j, j] = G.c / r
+            G_phase[i, j] = G.s / r
+            G_phase[j, i] = -conj(G.s) / r
+            push!(two_level_unitaries, G_phase)
+            # display(G * Matrix(I,size(A)))
+            # display(G_phase)
+            # display(G * A)
+            # display(G_phase * A)
+            # display(isunitary(G * A))
+            # display(isunitary(G_phase * A))
+            A = G_phase * A
+        end
+    end
+    # diagonal adjusting for phase
+    rot_angle = angle(A[end, end]) / float(size(A, 1))
+    for i in 1:(size(A, 1)-1)
+        D_phase = sparse(Matrix{ComplexF64}(I, size(A)))
+        D_phase[i, i] = exp(im * rot_angle)
+        D_phase[end, end] = exp(-im * rot_angle)
+        display(D_phase)
+        push!(two_level_unitaries, D_phase)
+        A = D_phase * A
+    end
+    # display(isunitary(A))
+    # display(diag(A))
+    # display(equiv_upto_phase(A, Matrix(I, size(A))))
+    return two_level_unitaries
+end
