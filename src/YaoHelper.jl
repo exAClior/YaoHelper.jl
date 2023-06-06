@@ -1,6 +1,6 @@
 module YaoHelper
 
-using Yao, LinearAlgebra, SparseArrays
+using Yao, LinearAlgebra, SparseArrays, Combinatorics
 # Write your package code here.
 include("states.jl")
 include("gates.jl")
